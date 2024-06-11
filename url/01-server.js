@@ -1,15 +1,19 @@
 var http = require("http")
 var url = require("url")
-var moduleRenderHTML =require("./module/renderHTML.js")
+var moduleRenderHTML = require("./module/renderHTML.js")
 var moduleRenderStatus = require("./module/renderStatus.js")
 // 创建服务器
 http.createServer((req, res) => {
-    //req: 接受浏览器传递的参数 
-    //res: 返回渲染的内容
-    // res.write('[1,2,3]')
+
+    if (req.url === '/favicon.ico') return
+    const myURL = new URL(req.url, 'hhtp://127.0.0.1:3000')
+    console.log('myurl:', myURL);
+
+    for(var [key,value] of myURL.searchParams){
+        console.log(key,value);
+    }
     
-    if(req.url==='/favicon.ico') return
-    console.log(url.parse(req.url).pathname);
+    // console.log(urlObj);
     res.writeHead(moduleRenderStatus.renderStatus(req.url), { 'Content-Type': 'text/html;charset=utf-8' })
     res.write(moduleRenderHTML.renderHTML(req.url))
     res.end()
