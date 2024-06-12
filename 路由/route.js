@@ -18,5 +18,8 @@ const route = {
         })
         res.write(fs.readFileSync("./static/404.html"), "utf8")
     },
+    "/favicon": (res) => {
+        render(res,"./static/favicon.ico","image/x-icon")
+    },
 }
 module.exports = route
