@@ -1,0 +1,14 @@
+.DS_Store
+node_modules
+dist
+deploy
+bower_components
+.happypack
+uploads
+npm-debug.log
+yarn-error.log
+package-lock.json
+.vscode
+**/*/proxy.conf
+proxy.conf
+

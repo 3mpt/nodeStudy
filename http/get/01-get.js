@@ -28,7 +28,7 @@ function httpget(cb){
             res.on("end",()=>{
                 console.log(data);
                 // response.end(data)
-                cb()
+                cb(data)
             })
 
         }
