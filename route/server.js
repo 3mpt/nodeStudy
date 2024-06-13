@@ -11,9 +11,9 @@ function start() {
         const myURL = new URL(req.url, "http://127.0.0.1")
         // console.log(myURL.pathname);
         try {
-            Route[myURL.pathname](res)
+            Route[myURL.pathname](req, res)
         } catch (error) {
-            Route["/404"](res)
+            Route["/404"](req, res)
         }
 
         res.end()
