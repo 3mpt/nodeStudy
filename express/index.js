@@ -36,6 +36,8 @@ const func1 = (req, res, next) => {
     }
 
 }
+// 应用级别中间件
+app.use(func1)
 const func2 = (req, res) => {
     // 查询数据库
     // 返回内容
@@ -51,7 +53,7 @@ app.get("/ab/:id", (req, res) => {
         age: 100
     })
 })
-app.get("/home", [func1, func2])
+app.get("/home", [ func2])
 
 
 app.listen(3000, () => {
