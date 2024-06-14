@@ -2,6 +2,10 @@ const express = require("express")
 const HomeRouter = require("./route3/HomeRouter")
 const LoginRouter = require("./route3/LoginRouter")
 const app = express()
+
+// 配置静态资源
+app.use(express.static("public"))
+
 // 配置解析post参数中间件-不用下载第三方
 app.use(express.urlencoded({extended:false})) // post参数获取 username=kerwin&password=1234
 app.use(express.json())
