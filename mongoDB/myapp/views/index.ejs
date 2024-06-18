@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>
+    <%= title %>
+  </title>
+  <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+
+<body>
+  <h1>mogodb增删改查演示</h1>
+  <div>
+    <div>用户名:<input id="username"/></div>
+    <div>密码:<input type="password"  id="password"/></div>
+    <div>年龄:<input type="number" id="age"/></div>
+    <div><button id="register">注册</button></div>
+  </div>‘
+  <script>
+    var register = document.querySelector("#register")
+    var username = document.querySelector("#username")
+    var password = document.querySelector("#password")
+    var age = document.querySelector("#age")
+    register.onclick = ()=>{
+      console.log(username.value, password.value, age.value);
+      fetch("/api/user/add",{
+        method:"POST",
+        body:JSON.stringify({
+          username:username.value,
+          password:password.value,
+          age:age.value
+        }),
+        headers:{
+          "Content-Type":"application/json"
+        }
+      }).then(res=>res.json()).then(res=>{
+        console.log(res);
+      })
+    }
+  </script>
+</body>
+
+</html>
