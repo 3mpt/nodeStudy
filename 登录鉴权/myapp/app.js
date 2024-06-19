@@ -7,7 +7,7 @@ var logger = require('morgan');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var loginRouter = require('./routes/login');
-
+var session = require("express-session")
 var app = express();
 
 // view engine setup
@@ -20,17 +20,45 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(session({
+  name: "kerwinsystem",
+  secret: "78444",
+  cookie: {
+    maxAge: 1000 * 60 * 60,
+    secure: false
+  },
+  resave: true,
+  saveUninitialized: true
+}))
+// 设置中间件， session 过期校验
+app.use((req, res, next) => {
+  // 排除login相关的路由和接口
+  if (req.url.includes("login")) {
+    next()
+    return
+  }
+  if (req.session.user) {
+    next()
+  } else {
+    // 是接口 返回错误码 ，不是接口 重定向
+    req.url.includes("api")
+      ? res.status(401).send({ ok: 0 }) :
+      res.redirect("/login")
+  }
+})
+
+
 app.use('/', indexRouter);
 app.use('/api', usersRouter);
 app.use('/login', loginRouter);
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};

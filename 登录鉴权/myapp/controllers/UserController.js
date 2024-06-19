@@ -39,6 +39,8 @@ const UserController = {
                 ok: 0
             })
         } else {
+            req.session.user = data[0] // 设置session对象
+            // 设置session 
             res.send({
                 ok: 1
             })
