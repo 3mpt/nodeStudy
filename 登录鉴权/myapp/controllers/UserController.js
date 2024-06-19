@@ -30,7 +30,22 @@ const UserController = {
         const { page, limit } = req.query
         const data = await UserService.getUser(page, limit)
         res.send(data)
+    },
+    login: async (req, res) => {
+        const { username, password } = req.body
+        const data = await UserService.login(username, password)
+        if (data.length === 0) {
+            res.send({
+                ok: 0
+            })
+        } else {
+            res.send({
+                ok: 1
+            })
+        }
+
     }
+
 
 }
 

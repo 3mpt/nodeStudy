@@ -15,7 +15,8 @@ router.post("/user", UserController.addUser)
 router.put("/user/:id", UserController.updateUser)
 router.delete("/user/:id", UserController.deleteUser)
 
-router.get("/user",UserController.getUser)
-
+router.get("/user", UserController.getUser)
+//登录校验
+router.post("/login", UserController.login)
 
 module.exports = router;
