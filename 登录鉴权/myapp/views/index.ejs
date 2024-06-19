@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>
+    <%= title %>
+  </title>
+  <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+
+<body>
+  <h1>后台系统-用户管理</h1>
+  <div>
+    <div>用户名:<input id="username" /></div>
+    <div>密码:<input type="password" id="password" /></div>
+    <div>年龄:<input type="number" id="age" /></div>
+    <div><button id="register">添加用户</button></div>
+  </div>
+  <hr>
+  <div>
+    <button id="update">更新用户</button>
+    <button id="delete">删除用户</button>
+  </div>
+  <hr>
+  <table border="1">
+    <thead>
+      <tr>
+        <td>id</td>
+        <td>年龄</td>
+        <td>用户名</td>
+      </tr>
+    </thead>
+    <tbody>
+
+    </tbody>
+  </table>
+
+
+  <script>
+    var update = document.querySelector("#update")
+    var mydelete = document.querySelector("#delete")
+    var register = document.querySelector("#register")
+    var username = document.querySelector("#username")
+    var password = document.querySelector("#password")
+    var age = document.querySelector("#age")
+    register.onclick = () => {
+      console.log(username.value, password.value, age.value);
+      fetch("/api/user", {
+        method: "POST",
+        body: JSON.stringify({
+          username: username.value,
+          password: password.value,
+          age: age.value
+        }),
+        headers: {
+          "Content-Type": "application/json"
+        }
+      }).then(res => res.json()).then(res => {
+        console.log(res);
+      })
+    }
+    update.onclick = () => {
+      console.log(username.value, password.value, age.value);
+      fetch("/api/user/667124fea5d1f987176225dd", {
+        method: "PUT",
+        body: JSON.stringify({
+          username: username.value,
+          password: password.value,
+          age: age.value
+        }),
+        headers: {
+          "Content-Type": "application/json"
+        }
+      }).then(res => res.json()).then(res => {
+        console.log(res);
+      })
+    }
+    mydelete.onclick = () => {
+      fetch("/api/user/667124fea5d1f987176225dd",{
+        method:"DELETE"
+      }).then
+        (res => res.json()).then(res => {
+          console.log(res);
+        })
+    }
+
+    fetch("/api/user?page=1&limit=2").then(res => res.json()).then(res => {
+      console.log(res);
+      var tbody = document.querySelector("tbody")
+      tbody.innerHTML = res.map(item=>
+        `
+        <tr>
+          <td>${item._id}</td>
+          <td>${item.username}</td>
+          <td>${item.age}</td>
+        </tr>
+        `
+      ).join("")
+    })
+
+  </script>
+</body>
+
+</html>
