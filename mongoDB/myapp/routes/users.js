@@ -24,5 +24,36 @@ router.post("/user/add", (req, res) => {
     })
   })
 })
+// 动态路由，动态id
+router.post("/user/update/:id", (req, res) => {
+  console.log(req.body, req.params.id);
+  const { username, password, age } = req.body
+  UserModel.updateOne({ _id: req.params.id }, {
+    username, password, age
+  }).then(data => {
+    res.send({
+      ok: 1
+    })
+  })
+})
+router.get("/user/delete/:id", (req, res) => {
+  UserModel.deleteOne({ _id: req.params.id }).then(data => {
+    res.send({
+      ok: 1
+    })
+  })
+})
+
+router.get("/user/list", (req, res) => {
+  const {page,limit} =req.query
+  UserModel.find({}, ['username', 'age'])
+  .sort()
+  .skip((page-1)*limit)
+  .limit(req.query.limit)
+  .then(data => {
+    res.send(data)
+  })
+})
+
 
 module.exports = router;

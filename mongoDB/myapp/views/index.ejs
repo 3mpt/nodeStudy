@@ -11,32 +11,91 @@
 <body>
   <h1>mogodb增删改查演示</h1>
   <div>
-    <div>用户名:<input id="username"/></div>
-    <div>密码:<input type="password"  id="password"/></div>
-    <div>年龄:<input type="number" id="age"/></div>
+    <div>用户名:<input id="username" /></div>
+    <div>密码:<input type="password" id="password" /></div>
+    <div>年龄:<input type="number" id="age" /></div>
     <div><button id="register">注册</button></div>
-  </div>‘
+  </div>
+  <hr>
+  <div>
+    <button id="update">更新</button>
+    <button id="delete">删除</button>
+  </div>
+  <hr>
+  <table border="1">
+    <thead>
+      <tr>
+        <td>id</td>
+        <td>年龄</td>
+        <td>用户名</td>
+      </tr>
+    </thead>
+    <tbody>
+
+    </tbody>
+  </table>
+
+
   <script>
+    var update = document.querySelector("#update")
+    var mydelete = document.querySelector("#delete")
     var register = document.querySelector("#register")
     var username = document.querySelector("#username")
     var password = document.querySelector("#password")
     var age = document.querySelector("#age")
-    register.onclick = ()=>{
+    register.onclick = () => {
       console.log(username.value, password.value, age.value);
-      fetch("/api/user/add",{
-        method:"POST",
-        body:JSON.stringify({
-          username:username.value,
-          password:password.value,
-          age:age.value
+      fetch("/api/user/add", {
+        method: "POST",
+        body: JSON.stringify({
+          username: username.value,
+          password: password.value,
+          age: age.value
         }),
-        headers:{
-          "Content-Type":"application/json"
+        headers: {
+          "Content-Type": "application/json"
         }
-      }).then(res=>res.json()).then(res=>{
+      }).then(res => res.json()).then(res => {
         console.log(res);
       })
     }
+    update.onclick = () => {
+      console.log(username.value, password.value, age.value);
+      fetch("/api/user/update/667124fea5d1f987176225dd", {
+        method: "POST",
+        body: JSON.stringify({
+          username: username.value,
+          password: password.value,
+          age: age.value
+        }),
+        headers: {
+          "Content-Type": "application/json"
+        }
+      }).then(res => res.json()).then(res => {
+        console.log(res);
+      })
+    }
+    mydelete.onclick = () => {
+      fetch("/api/user/delete/667124fea5d1f987176225dd").then
+        (res => res.json()).then(res => {
+          console.log(res);
+        })
+    }
+
+    fetch("/api/user/list?page=1&limit=2").then(res => res.json()).then(res => {
+      console.log(res);
+      var tbody = document.querySelector("tbody")
+      tbody.innerHTML = res.map(item=>
+        `
+        <tr>
+          <td>${item._id}</td>
+          <td>${item.username}</td>
+          <td>${item.age}</td>
+        </tr>
+        `
+      ).join("")
+    })
+
   </script>
 </body>
 
