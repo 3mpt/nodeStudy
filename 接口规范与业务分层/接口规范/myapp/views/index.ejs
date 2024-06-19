@@ -45,7 +45,7 @@
     var age = document.querySelector("#age")
     register.onclick = () => {
       console.log(username.value, password.value, age.value);
-      fetch("/api/user/add", {
+      fetch("/api/user", {
         method: "POST",
         body: JSON.stringify({
           username: username.value,
@@ -61,8 +61,8 @@
     }
     update.onclick = () => {
       console.log(username.value, password.value, age.value);
-      fetch("/api/user/update/667124fea5d1f987176225dd", {
-        method: "POST",
+      fetch("/api/user/667124fea5d1f987176225dd", {
+        method: "PUT",
         body: JSON.stringify({
           username: username.value,
           password: password.value,
@@ -76,13 +76,15 @@
       })
     }
     mydelete.onclick = () => {
-      fetch("/api/user/delete/667124fea5d1f987176225dd").then
+      fetch("/api/user/667124fea5d1f987176225dd",{
+        method:"DELETE"
+      }).then
         (res => res.json()).then(res => {
           console.log(res);
         })
     }
 
-    fetch("/api/user/list?page=1&limit=2").then(res => res.json()).then(res => {
+    fetch("/api/user?page=1&limit=2").then(res => res.json()).then(res => {
       console.log(res);
       var tbody = document.querySelector("tbody")
       tbody.innerHTML = res.map(item=>

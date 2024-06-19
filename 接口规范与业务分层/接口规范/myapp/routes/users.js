@@ -8,8 +8,8 @@ router.get('/', function (req, res, next) {
   res.cookie("gender", "male")
   res.send({ name: "kerwin" });
 });
-
-router.post("/user/add", (req, res) => {
+// 响应前端post请求，增加用户
+router.post("/user", (req, res) => {
   console.log(req.body);
   // 插入数据库
   // 1.创建一个模型(user,限制filed类型)， --对应数据库的集合(users)
@@ -25,7 +25,7 @@ router.post("/user/add", (req, res) => {
   })
 })
 // 动态路由，动态id
-router.post("/user/update/:id", (req, res) => {
+router.put("/user/:id", (req, res) => {
   console.log(req.body, req.params.id);
   const { username, password, age } = req.body
   UserModel.updateOne({ _id: req.params.id }, {
@@ -36,7 +36,7 @@ router.post("/user/update/:id", (req, res) => {
     })
   })
 })
-router.get("/user/delete/:id", (req, res) => {
+router.delete("/user/:id", (req, res) => {
   UserModel.deleteOne({ _id: req.params.id }).then(data => {
     res.send({
       ok: 1
@@ -44,7 +44,7 @@ router.get("/user/delete/:id", (req, res) => {
   })
 })
 
-router.get("/user/list", (req, res) => {
+router.get("/user", (req, res) => {
   const {page,limit} =req.query
   UserModel.find({}, ['username', 'age'])
   .sort()
