@@ -46,6 +46,11 @@ const UserController = {
             })
         }
 
+    },
+    logout: async (req, res) => {
+        req.session.destroy(() => {
+            res.send({ ok: 1 })
+        })
     }
 
 

@@ -8,6 +8,7 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var loginRouter = require('./routes/login');
 var session = require("express-session")
+const MongoStore = require("connect-mongo")
 var app = express();
 
 // view engine setup
@@ -28,9 +29,13 @@ app.use(session({
     secure: false
   },
   resave: true,
-  saveUninitialized: true
+  saveUninitialized: true,
+  store: MongoStore.create({
+    mongoUrl: "mongodb://127.0.0.1:27017/kerwin_session", // 新创建一个数据库
+    ttl: 1000 * 60 * 60
+  })
 }))
-// 设置中间件， session 过期校验
+// 设置中间件， session 过期校验 
 app.use((req, res, next) => {
   // 排除login相关的路由和接口
   if (req.url.includes("login")) {
@@ -38,6 +43,7 @@ app.use((req, res, next) => {
     return
   }
   if (req.session.user) {
+    req.session.date = Date.now()
     next()
   } else {
     // 是接口 返回错误码 ，不是接口 重定向

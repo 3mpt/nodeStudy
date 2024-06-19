@@ -18,5 +18,6 @@ router.delete("/user/:id", UserController.deleteUser)
 router.get("/user", UserController.getUser)
 //登录校验
 router.post("/login", UserController.login)
+router.get("/logout", UserController.logout)
 
 module.exports = router;

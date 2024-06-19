@@ -1,3 +1,4 @@
+const { logout } = require('../controllers/UserController');
 const UserModel = require('../model/UserModel');
 
 const UserService = {

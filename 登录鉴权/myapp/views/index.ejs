@@ -9,7 +9,9 @@
 </head>
 
 <body>
-  <h1>后台系统-用户管理</h1>
+  <h1>后台系统-用户管理
+    <button id="exit">退出登录</button>
+  </h1>
   <div>
     <div>用户名:<input id="username" /></div>
     <div>密码:<input type="password" id="password" /></div>
@@ -43,6 +45,7 @@
     var username = document.querySelector("#username")
     var password = document.querySelector("#password")
     var age = document.querySelector("#age")
+    var exit = document.querySelector("#exit")
     register.onclick = () => {
       console.log(username.value, password.value, age.value);
       fetch("/api/user", {
@@ -76,8 +79,8 @@
       })
     }
     mydelete.onclick = () => {
-      fetch("/api/user/667124fea5d1f987176225dd",{
-        method:"DELETE"
+      fetch("/api/user/667124fea5d1f987176225dd", {
+        method: "DELETE"
       }).then
         (res => res.json()).then(res => {
           console.log(res);
@@ -87,7 +90,7 @@
     fetch("/api/user?page=1&limit=2").then(res => res.json()).then(res => {
       console.log(res);
       var tbody = document.querySelector("tbody")
-      tbody.innerHTML = res.map(item=>
+      tbody.innerHTML = res.map(item =>
         `
         <tr>
           <td>${item._id}</td>
@@ -97,7 +100,12 @@
         `
       ).join("")
     })
-
+    // 退出
+    exit.onclick = () => {
+      fetch("/api/logout").then(res=>res.json()).then(res=>{
+        location.href="/login"
+      })
+    }
   </script>
 </body>
 
