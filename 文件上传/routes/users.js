@@ -2,7 +2,8 @@ var express = require('express');
 const UserModel = require('../model/UserModel');
 const UserController = require('../controllers/UserController');
 var router = express.Router();
-
+const multer  = require('multer')
+const upload = multer({ dest: 'public/uploads/' })
 /* GET users listing. */
 router.get('/', function (req, res, next) {
   console.log(req.cookies);
@@ -10,7 +11,7 @@ router.get('/', function (req, res, next) {
   res.send({ name: "kerwin" });
 });
 // 响应前端post请求，增加用户
-router.post("/user", UserController.addUser)
+router.post("/user", upload.single("avatar"),UserController.addUser)
 // 动态路由，获取id-更新用户
 router.put("/user/:id", UserController.updateUser)
 router.delete("/user/:id", UserController.deleteUser)

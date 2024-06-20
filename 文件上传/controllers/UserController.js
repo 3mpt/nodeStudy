@@ -3,12 +3,14 @@ const JWT = require("../util/JWT");
 
 const UserController = {
     addUser: async (req, res) => {
-        console.log(req.body);
+        console.log(req.body,req.file);
         // 插入数据库
         // 1.创建一个模型(user,限制filed类型)， --对应数据库的集合(users)
         // user.create user.find user.delete user.update
+        const avatar = req.file?`/uploads/${req.file.filename}`:
+        `/images/test.jpg`
         const { username, password, age } = req.body
-        await UserService.addUser(username, password, age)
+        await UserService.addUser(username, password, age, avatar)
         res.send({
             ok: 1
         })
