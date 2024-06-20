@@ -8,7 +8,6 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var loginRouter = require('./routes/login');
 var session = require("express-session")
-const MongoStore = require("connect-mongo")
 var JWT = require("./util/JWT")
 var app = express();
 
