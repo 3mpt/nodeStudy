@@ -1,11 +1,45 @@
 <!DOCTYPE html>
 <html>
+  
 
 <head>
   <title>
     <%= title %>
   </title>
   <link rel='stylesheet' href='/stylesheets/style.css' />
+  <script src="https://cdn.jsdelivr.net/npm/axios@1.6.7/dist/axios.min.js"></script>
+  <script>
+    // 拦截器
+    axios.interceptors.request.use(function (config) {
+        // 请求发出前执行的方法
+        console.log('请求发出前执行的方法');
+        const token =localStorage.getItem("token")
+        config.headers.Authorization = `Bearer ${token}`
+        return config;
+    }, function (error) {
+        // Do something with request error
+        console.log(error.response.status);
+        return Promise.reject(error);
+    });
+
+    // Add a response interceptor
+    axios.interceptors.response.use(function (response) {
+        // 任何请求回来之前所调用的方法
+        console.log('任何请求回来之前所调用的方法');
+        console.log(response.headers);
+        const { authorization } = response.headers
+        authorization && localStorage.setItem("token", authorization)
+        return response;
+    }, function (error) {
+        // Any status codes that falls outside the range of 2xx cause this function to trigger
+        // Do something with response error
+        if(error.response.status===401){
+          localStorage.removeItem("token")
+          location.href= '/login'
+        }
+        return Promise.reject(error);
+    });
+</script>
 </head>
 
 <body>
@@ -48,49 +82,34 @@
     var exit = document.querySelector("#exit")
     register.onclick = () => {
       console.log(username.value, password.value, age.value);
-      fetch("/api/user", {
-        method: "POST",
-        body: JSON.stringify({
-          username: username.value,
-          password: password.value,
-          age: age.value
-        }),
-        headers: {
-          "Content-Type": "application/json"
-        }
-      }).then(res => res.json()).then(res => {
+      axios.post("/api/user", {
+        username: username.value,
+        password: password.value,
+        age: age.value
+      }).then(res => {
         console.log(res);
       })
     }
     update.onclick = () => {
-      console.log(username.value, password.value, age.value);
-      fetch("/api/user/667124fea5d1f987176225dd", {
-        method: "PUT",
-        body: JSON.stringify({
-          username: username.value,
-          password: password.value,
-          age: age.value
-        }),
-        headers: {
-          "Content-Type": "application/json"
-        }
-      }).then(res => res.json()).then(res => {
+      console.log(username.value, password.value, age.value)
+      axios.put("/api/user/66728a0b8a3ffe2d38dd0c54", {
+        username: username.value,
+        password: password.value,
+        age: age.value
+      }).then(res => {
         console.log(res);
       })
     }
     mydelete.onclick = () => {
-      fetch("/api/user/667124fea5d1f987176225dd", {
-        method: "DELETE"
-      }).then
-        (res => res.json()).then(res => {
-          console.log(res);
-        })
+      axios.delete("/api/user/66728a0b8a3ffe2d38dd0c54").then(res => {
+        console.log(res);
+      })
     }
 
-    fetch("/api/user?page=1&limit=2").then(res => res.json()).then(res => {
+    axios.get("/api/user?page=1&limit=10").then(res => {
       console.log(res);
       var tbody = document.querySelector("tbody")
-      tbody.innerHTML = res.map(item =>
+      tbody.innerHTML = res.data.map(item =>
         `
         <tr>
           <td>${item._id}</td>
@@ -102,9 +121,9 @@
     })
     // 退出
     exit.onclick = () => {
-      fetch("/api/logout").then(res=>res.json()).then(res=>{
-        location.href="/login"
-      })
+      localStorage.removeItem("token")
+      location.href = "/login"
+      
     }
   </script>
 </body>

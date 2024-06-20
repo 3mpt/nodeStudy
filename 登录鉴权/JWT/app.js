@@ -9,6 +9,7 @@ var usersRouter = require('./routes/users');
 var loginRouter = require('./routes/login');
 var session = require("express-session")
 const MongoStore = require("connect-mongo")
+var JWT = require("./util/JWT")
 var app = express();
 
 // view engine setup
@@ -20,36 +21,27 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-
-app.use(session({
-  name: "kerwinsystem",
-  secret: "78444",
-  cookie: {
-    maxAge: 1000 * 60 * 60,
-    secure: false
-  },
-  resave: true,
-  saveUninitialized: true,
-  store: MongoStore.create({
-    mongoUrl: "mongodb://127.0.0.1:27017/kerwin_session", // 新创建一个数据库
-    ttl: 1000 * 60 * 60
-  })
-}))
-// 设置中间件， session 过期校验 
 app.use((req, res, next) => {
   // 排除login相关的路由和接口
   if (req.url.includes("login")) {
     next()
     return
   }
-  if (req.session.user) {
-    req.session.date = Date.now()
-    next()
+  const token = req.headers['authorization']?.split(" ")[1]
+  if (token) {
+    const payload = JWT.verify(token)
+    if (payload) {
+      const newToken = JWT.generate({
+        _id: payload._id,
+        username: payload.username
+      }, '1d')
+      res.header("Authorization", newToken)
+      next()
+    } else {
+      res.status(401).send({ errCode: -1, errInfo: "token过期啦！" })
+    }
   } else {
-    // 是接口 返回错误码 ，不是接口 重定向
-    req.url.includes("api")
-      ? res.status(401).send({ ok: 0 }) :
-      res.redirect("/login")
+    next()
   }
 })
 

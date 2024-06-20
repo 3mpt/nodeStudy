@@ -3,7 +3,8 @@ var router = express.Router();
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('login', { title: '登录' });
+  res.render('login', { title: '登录1' });
 });
 
-module.exports = router;
+module.exports = router
+
