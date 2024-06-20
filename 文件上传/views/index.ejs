@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-  
+
 
 <head>
   <title>
@@ -11,35 +11,41 @@
   <script>
     // 拦截器
     axios.interceptors.request.use(function (config) {
-        // 请求发出前执行的方法
-        console.log('请求发出前执行的方法');
-        const token =localStorage.getItem("token")
-        config.headers.Authorization = `Bearer ${token}`
-        return config;
+      // 请求发出前执行的方法
+      console.log('请求发出前执行的方法');
+      const token = localStorage.getItem("token")
+      config.headers.Authorization = `Bearer ${token}`
+      return config;
     }, function (error) {
-        // Do something with request error
-        console.log(error.response.status);
-        return Promise.reject(error);
+      // Do something with request error
+      console.log(error.response.status);
+      return Promise.reject(error);
     });
 
     // Add a response interceptor
     axios.interceptors.response.use(function (response) {
-        // 任何请求回来之前所调用的方法
-        console.log('任何请求回来之前所调用的方法');
-        console.log(response.headers);
-        const { authorization } = response.headers
-        authorization && localStorage.setItem("token", authorization)
-        return response;
+      // 任何请求回来之前所调用的方法
+      console.log('任何请求回来之前所调用的方法');
+      console.log(response.headers);
+      const { authorization } = response.headers
+      authorization && localStorage.setItem("token", authorization)
+      return response;
     }, function (error) {
-        // Any status codes that falls outside the range of 2xx cause this function to trigger
-        // Do something with response error
-        if(error.response.status===401){
-          localStorage.removeItem("token")
-          location.href= '/login'
-        }
-        return Promise.reject(error);
+      // Any status codes that falls outside the range of 2xx cause this function to trigger
+      // Do something with response error
+      if (error.response.status === 401) {
+        localStorage.removeItem("token")
+        location.href = '/login'
+      }
+      return Promise.reject(error);
     });
-</script>
+  </script>
+  <style>
+    td img {
+      width: 80px;
+      height: 80px;
+    }
+  </style>
 </head>
 
 <body>
@@ -50,6 +56,7 @@
     <div>用户名:<input id="username" /></div>
     <div>密码:<input type="password" id="password" /></div>
     <div>年龄:<input type="number" id="age" /></div>
+    <div>头像: <input type="file" id="avatar" /></div>
     <div><button id="register">添加用户</button></div>
   </div>
   <hr>
@@ -64,6 +71,7 @@
         <td>id</td>
         <td>年龄</td>
         <td>用户名</td>
+        <td>头像</td>
       </tr>
     </thead>
     <tbody>
@@ -80,15 +88,22 @@
     var password = document.querySelector("#password")
     var age = document.querySelector("#age")
     var exit = document.querySelector("#exit")
+    var avatar = document.querySelector("#avatar")
     register.onclick = () => {
-      console.log(username.value, password.value, age.value);
-      axios.post("/api/user", {
-        username: username.value,
-        password: password.value,
-        age: age.value
+      console.log(username.value, password.value, age.value, avatar.files[0]);
+      const formsdata = new FormData()
+      formsdata.append("username", username.value)
+      formsdata.append("password", password.value)
+      formsdata.append("age", age.value)
+      formsdata.append("avatar", avatar.files[0])
+      axios.post("/api/user", formsdata,{
+        headers:{
+          "Content-Type":"multipart/form-data"
+        }
       }).then(res => {
         console.log(res);
       })
+      
     }
     update.onclick = () => {
       console.log(username.value, password.value, age.value)
@@ -115,6 +130,7 @@
           <td>${item._id}</td>
           <td>${item.username}</td>
           <td>${item.age}</td>
+          <td><img src="${item.avatar}"/></td>
         </tr>
         `
       ).join("")
@@ -123,7 +139,7 @@
     exit.onclick = () => {
       localStorage.removeItem("token")
       location.href = "/login"
-      
+
     }
   </script>
 </body>

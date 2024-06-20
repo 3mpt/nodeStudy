@@ -16,7 +16,7 @@ const UserService = {
         return UserModel.deleteOne({ _id })
     },
     getUser: (page, limit) => {
-        return UserModel.find({}, ['username', 'age'])
+        return UserModel.find({}, ['username', 'age', 'avatar'])
             .sort()
             .skip((page - 1) * limit)
             .limit(limit)
