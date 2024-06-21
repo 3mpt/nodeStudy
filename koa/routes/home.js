@@ -1,10 +1,6 @@
 const Router = require("koa-router")
 const router = new Router()
-router.get("/", (ctx, next) => {
-    ctx.body = `
-    <html>
-         <h1>home</h1>
-    </html>
-    `
+router.get("/", async (ctx, next) => {
+    await ctx.render("home",{username:"zyc"})  //自动找views/home.ejs
 })
 module.exports = router
