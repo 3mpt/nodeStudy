@@ -6,6 +6,7 @@
     "start": "nodemon ./bin/www"
   },
   "dependencies": {
+    "apidoc": "^1.2.0",
     "axios": "^1.7.2",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
