@@ -28,4 +28,25 @@ router.post('/', (ctx, next) => {
             info: "删除成功"
         }
     })
+router.post('/login', (ctx, next) => {
+    console.log(ctx.request.body);
+    const { username, password } = ctx.request.body
+    if (username === 'root' && password === "123qwezxc") {
+        // 校验成功了设置sessionId
+        ctx.session.user ={
+            username:"kerwin"
+        }
+        ctx.body = {
+            ok: 1
+        }
+        
+    } else {
+        ctx.body = {
+            ok: 0
+        }
+    }
+
+
+
+})
 module.exports = router
