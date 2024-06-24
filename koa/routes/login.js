@@ -3,6 +3,6 @@ const router = new Router()
 router.get("/", async (ctx, next) => {
     
     ctx.cookies.set("location", 'dalian')
-    await ctx.render("login", { username: "zyc" })  //自动找views/home.ejs
+    await ctx.render("login", { title: "zyc" })  //自动找views/home.ejs
 })
 module.exports = router
