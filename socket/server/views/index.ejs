@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+  
+
+<head>
+  <title>
+    <%= title %>
+  </title>
+  <link rel='stylesheet' href='/stylesheets/style.css' />
+  <script src="https://cdn.jsdelivr.net/npm/axios@1.6.7/dist/axios.min.js"></script>
+  <script>
+    // 拦截器
+    axios.interceptors.request.use(function (config) {
+        // 请求发出前执行的方法
+        console.log('请求发出前执行的方法');
+        const token =localStorage.getItem("token")
+        config.headers.Authorization = `Bearer ${token}`
+        return config;
+    }, function (error) {
+        // Do something with request error
+        console.log(error.response.status);
+        return Promise.reject(error);
+    });
+
+    // Add a response interceptor
+    axios.interceptors.response.use(function (response) {
+        // 任何请求回来之前所调用的方法
+        console.log('任何请求回来之前所调用的方法');
+        console.log(response.headers);
+        const { authorization } = response.headers
+        authorization && localStorage.setItem("token", authorization)
+        return response;
+    }, function (error) {
+        // Any status codes that falls outside the range of 2xx cause this function to trigger
+        // Do something with response error
+        if(error.response.status===401){
+          localStorage.removeItem("token")
+          location.href= '/login'
+        }
+        return Promise.reject(error);
+    });
+</script>
+</head>
+
+<body>
+  <h1>后台系统-用户管理
+    <button id="exit">退出登录</button>
+  </h1>
+  <div>
+    <div>用户名:<input id="username" /></div>
+    <div>密码:<input type="password" id="password" /></div>
+    <div>年龄:<input type="number" id="age" /></div>
+    <div><button id="register">添加用户</button></div>
+  </div>
+  <hr>
+  <div>
+    <button id="update">更新用户</button>
+    <button id="delete">删除用户</button>
+  </div>
+  <hr>
+  <table border="1">
+    <thead>
+      <tr>
+        <td>id</td>
+        <td>年龄</td>
+        <td>用户名</td>
+      </tr>
+    </thead>
+    <tbody>
+
+    </tbody>
+  </table>
+
+
+  <script>
+    var update = document.querySelector("#update")
+    var mydelete = document.querySelector("#delete")
+    var register = document.querySelector("#register")
+    var username = document.querySelector("#username")
+    var password = document.querySelector("#password")
+    var age = document.querySelector("#age")
+    var exit = document.querySelector("#exit")
+    register.onclick = () => {
+      console.log(username.value, password.value, age.value);
+      axios.post("/api/user", {
+        username: username.value,
+        password: password.value,
+        age: age.value
+      }).then(res => {
+        console.log(res);
+      })
+    }
+    update.onclick = () => {
+      console.log(username.value, password.value, age.value)
+      axios.put("/api/user/66728a0b8a3ffe2d38dd0c54", {
+        username: username.value,
+        password: password.value,
+        age: age.value
+      }).then(res => {
+        console.log(res);
+      })
+    }
+    mydelete.onclick = () => {
+      axios.delete("/api/user/66728a0b8a3ffe2d38dd0c54").then(res => {
+        console.log(res);
+      })
+    }
+
+    axios.get("/api/user?page=1&limit=10").then(res => {
+      console.log(res);
+      var tbody = document.querySelector("tbody")
+      tbody.innerHTML = res.data.map(item =>
+        `
+        <tr>
+          <td>${item._id}</td>
+          <td>${item.username}</td>
+          <td>${item.age}</td>
+        </tr>
+        `
+      ).join("")
+    })
+    // 退出
+    exit.onclick = () => {
+      localStorage.removeItem("token")
+      location.href = "/login"
+      
+    }
+  </script>
+</body>
+
+</html>
