@@ -1,7 +1,9 @@
 const Router = require("koa-router");
 const JWT = require("../util/JWT");
 const router = new Router()
-
+const multer = require("@koa/multer")
+const upload = multer({ dest: "public/uploads" })
+const UserModel =require("../model/UserModel")
 //  增
 router.post('/', (ctx, next) => {
     console.log(ctx.request.body);
@@ -57,5 +59,17 @@ router.post('/login', (ctx, next) => {
 
 
 
+})
+router.post("/upload", upload.single("avatar"),async (ctx) => {
+    const { username, age, password } = ctx.request.body
+    const avatar = ctx.file ? `/upload/${ctx.file.filename}`:``
+    // 利用User模型进行存储操作 UserModel.create
+    await UserModel.create({
+        username,
+        age,
+        password,
+        avatar
+    })
+    ctx.body = { ok: 1 }
 })
 module.exports = router

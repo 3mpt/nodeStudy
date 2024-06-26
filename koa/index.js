@@ -7,6 +7,9 @@ const bodyParser = require("koa-bodyparser")
 const views = require("koa-views")
 const session = require("koa-session-minimal")
 const JWT = require("./util/JWT")
+// 数据库连接
+require("./config/db.config")
+
 // 在注册应用级组件
 app.use(bodyParser()) //获取前端传来post参数
 app.use(static(
