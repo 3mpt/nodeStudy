@@ -9,8 +9,14 @@
 
 <body>
     <h1>聊天室</h1>
+    <input type="text" id="text"> <button id="send">send</button>
+    <select id="select"></select>
     <!-- 建立socket连接 带着token 后端验证 -->
     <script>
+        
+        var select = document.querySelector("#select")
+        var send = document.querySelector("#send")
+        var text = document.querySelector("#text")
         const WebSocketType = {
             Error: 0, // 错误
             GroupList: 1,
@@ -29,13 +35,45 @@
                     localStorage.removeItem("token")
                     location.href = '/login'
                     break;
+                case WebSocketType.GroupList:
+                    console.log(JSON.parse(msgObj.data));
+                    const onlineList = JSON.parse(msgObj.data)
+                    select.innerHTML = ""
+                    select.innerHTML = `<option value="all">all</option>` +
+                        onlineList.map(item => `
+                    <option>${item.username}</option>
+                        `
+                        ).join("")
+
+                    break;
                 case WebSocketType.GroupChat:
-                    console.log(msgObj);
+                    console.log(msgObj.user?msgObj.user.username:"广播"+':'+msgObj.data)
+                    break;
+                case WebSocketType.SingleChat:
+                    console.log(msgObj.user.username+':'+msgObj.data)
                     break;
             }
         }
+        send.onclick = () => {
+            if (select.value === "all") {
+                console.log("群发");
+                console.log(createMessage(WebSocketType.GroupChat, text.value));
+                ws.send(createMessage(WebSocketType.GroupChat, text.value))
+            } else {
+                console.log("私聊");
+                ws.send(createMessage(WebSocketType.SingleChat, text.value,select.value))
+            }
+        }
+
         ws.onerror = () => {
             console.log('error');
+        }
+
+        function createMessage(type, data,to) {
+            return JSON.stringify({
+                type,
+                data,to
+            })
         }
     </script>
 </body>
