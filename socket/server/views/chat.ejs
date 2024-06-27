@@ -35,25 +35,34 @@
             console.log(msg.user ? msg.user.username : "广播" + ':' + msg.data)
             console.log(msg);
         })
+        socket.on(WebSocketType.SingleChat, (msg) => {
+            console.log(msg.user ? msg.user.username : "广播" + ':' + msg.data)
+            console.log(msg);
+        })
         socket.on(WebSocketType.Error, (msg) => {
             localStorage.removeItem("token")
             location.href = '/'
         })
+        socket.on(WebSocketType.GroupList, (msg) => {
+            const onlineList = msg.data
+            select.innerHTML = ""
+            select.innerHTML = `<option value="all">all</option>` +
+                onlineList.map(item => `
+                    <option>${item.username}</option>
+                        `
+                ).join("")
+        })
         send.onclick = () => {
             if (select.value === "all") {
-                console.log("群发");
-                console.log(createMessage(WebSocketType.GroupChat, text.value));
-                ws.send(createMessage(WebSocketType.GroupChat, text.value))
+                socket.emit(WebSocketType.GroupChat, createMessage(text.value))
             } else {
-                console.log("私聊");
-                ws.send(createMessage(WebSocketType.SingleChat, text.value, select.value))
+                socket.emit(WebSocketType.SingleChat, createMessage(text.value, select.value))
             }
         }
-        function createMessage(type, data, to) {
-            return JSON.stringify({
-                type,
+        function createMessage(data, to) {
+            return {
                 data, to
-            })
+            }
         }
     </script>
 </body>
