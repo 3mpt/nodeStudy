@@ -55,6 +55,7 @@
                 console.log(res.data);
 
                 if (res.data.ok === 1) {
+                    localStorage.setItem("username", username.value)
                     location.href = '/chat'
                 } else {
                     alert("用户名密码不匹配")

@@ -7,7 +7,7 @@
 var app = require('../app');
 var debug = require('debug')('myapp:server');
 var http = require('http');
-require("./websocketServer.js")
+var socketServer = require("./socketio.js")
 // 引入数据库模块
 require("../config/db.config.js")
 /**
@@ -22,7 +22,7 @@ app.set('port', port);
  */
 
 var server = http.createServer(app);
-
+socketServer(server)
 /**
  * Listen on provided port, on all network interfaces.
  */
