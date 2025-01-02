@@ -11,4 +11,4 @@ package-lock.json
 .vscode
 **/*/proxy.conf
 proxy.conf
-
+.venv
